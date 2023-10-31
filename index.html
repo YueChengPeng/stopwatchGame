@@ -20,7 +20,7 @@
             transition: opacity 1.5s;
             font-family: 'Economica', sans-serif;
             color: rgb(230, 230, 230);
-            font-size: 20rem;
+            font-size: 16rem;
             margin: 0;
             text-align: center;
         }
@@ -42,8 +42,9 @@
             /* 设置宽度和高度相同以创建正圆 */
             height: 8rem;
             background: none;
-            border: 2px solid rgb(230, 230, 230);
-            border-radius: 50%;
+            border: none;
+            /* border: 2px solid rgb(230, 230, 230); */
+            /* border-radius: 50%; */
             color: rgb(230, 230, 230);
             text-align: center;
             text-decoration: none;
@@ -130,10 +131,10 @@
             }
         }
 
-        startButton.addEventListener("click", startTimer);
-        resetButton.addEventListener("click", resetTimer);
-        player1Button.addEventListener("click", player1Pressed);
-        player2Button.addEventListener("click", player2Pressed);
+        startButton.addEventListener("touchstart", startTimer);
+        resetButton.addEventListener("touchstart", resetTimer);
+        player1Button.addEventListener("touchstart", player1Pressed);
+        player2Button.addEventListener("touchstart", player2Pressed);
 
         function startTimer() {
             if (!startTime) {

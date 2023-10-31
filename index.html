@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>stopwatch game</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        html {
+            height: 100%;
+            /* font-size: 100%; */
+            /* 字体大小rem单位根据屏幕viewport大小自动更新调整 */
+            font-size: calc(1728vw / 1728);
+            /*rem（font size of the root element）是指相对于根元素的字体大小的单位*/
+            background-color: rgb(16, 16, 16);
+        }
+
+        #display {
+            transition: opacity 1.5s;
+            font-family: 'Economica', sans-serif;
+            color: rgb(230, 230, 230);
+            font-size: 20rem;
+            margin: 0;
+            text-align: center;
+        }
+        #result{
+            font-family: 'Economica', sans-serif;
+            color: rgb(230, 230, 230);
+            font-size: 3rem;
+            text-align: center;
+        }
+
+        p{
+            font-family: 'Economica', sans-serif;
+            color: rgb(230, 230, 230);
+            font-size: 2rem;
+        }
+
+        .circleButton {
+            width: 8rem;
+            /* 设置宽度和高度相同以创建正圆 */
+            height: 8rem;
+            background: none;
+            border: 2px solid rgb(230, 230, 230);
+            border-radius: 50%;
+            color: rgb(230, 230, 230);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 2.5rem;
+            cursor: pointer;
+            font-family: 'Economica', sans-serif;
+        }
+        .playerButton{
+            /* width: 10rem; */
+            height: 8rem;
+            background: none;
+            border: 2px solid rgb(230, 230, 230);
+            border-radius: 1rem;
+            padding: 0 2rem 0 2rem;
+            color: rgb(230, 230, 230);
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 2.5rem;
+            cursor: pointer;
+            font-family: 'Economica', sans-serif;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Economica:wght@700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <p style="margin-right: 2rem;">set time:</p>
+        <input type="number" id="customTargetTime" min="1" step="1" value="10" style="height: 3rem;">
+    </div>
+
+    <p id="display">00.000</p>
+    <div style="display: flex; justify-content: space-around; padding: 0 12rem 0 12rem;">
+        <button id="player1Button" class="playerButton">Player 1 Stop</button>
+        <div>
+            <div>
+                <button id="startButton" class="circleButton" style="margin: 0 1rem 0 1rem;">Start</button>
+                <button id="resetButton" class="circleButton" style="margin: 0 1rem 0 1rem;">Reset</button>
+            </div>
+        </div>
+        
+        <button id="player2Button" class="playerButton">Player 2 Stop</button>
+    </div>
+    
+    <p id="result"></p>
+
+    <script>
+        let startTime;
+        let intervalId;
+        let player1Time;
+        let player2Time;
+        let player1ButtonPressed = false;
+        let player2ButtonPressed = false;
+        let numberOfPlayerPressed = 0;
+        let targetTime = 10;
+
+        document.body.style.overflow = "hidden"; // unable scroll
+
+        const display = document.getElementById("display");
+        const startButton = document.getElementById("startButton");
+        const resetButton = document.getElementById("resetButton");
+        const player1Button = document.getElementById("player1Button");
+        const player2Button = document.getElementById("player2Button");
+        const result = document.getElementById("result");
+        const customTargetTimeInput = document.getElementById("customTargetTime");
+
+        customTargetTimeInput.addEventListener("change", function() {
+            targetTime = parseFloat(customTargetTimeInput.value);
+            resetTimer();
+            console.log(targetTime);
+        });
+
+        function updateTimer() {
+            if (startTime) {
+                const currentTime = Date.now();
+                const elapsedMilliseconds = currentTime - startTime;
+                const seconds = Math.floor((elapsedMilliseconds % 60000) / 1000);
+                const milliseconds = elapsedMilliseconds % 1000;
+                display.textContent = `${String(seconds).padStart(2, "0")}.${String(milliseconds).padStart(3, "0")}`;
+            }
+        }
+
+        startButton.addEventListener("click", startTimer);
+        resetButton.addEventListener("click", resetTimer);
+        player1Button.addEventListener("click", player1Pressed);
+        player2Button.addEventListener("click", player2Pressed);
+
+        function startTimer() {
+            if (!startTime) {
+                startTime = Date.now();
+                intervalId = setInterval(updateTimer, 10);
+
+                // set time to opacity=0 in 1.5s
+                setTimeout(function () {
+                    const display = document.getElementById("display");
+                    display.style.opacity = 0;
+                }, 1000);
+                startButton.disabled = true;
+                player1Button.disabled = false;
+                player2Button.disabled = false;
+            }
+        }
+
+        function resetTimer() {
+            display.style.opacity = 1;
+            player1Button.style.opacity = 1;
+            player2Button.style.opacity = 1;
+            numberOfPlayerPressed = 0;
+            result.textContent = "";
+            startTime = null;
+            player1Time = null;
+            player2Time = null;
+            player1ButtonPressed = false;
+            player2ButtonPressed = false;
+            display.textContent = '00.000';
+            result.textContent = '';
+            player1Button.disabled = false;
+            player2Button.disabled = false;
+            startButton.disabled = false;            
+        }
+
+        function player1Pressed() {
+            if (startTime) {
+                player1Time = display.textContent;
+                player1Button.style.opacity = 0.2;
+                player1ButtonPressed = true;
+                player1Button.disabled = true;
+
+                // if both pressed, determine winner
+                numberOfPlayerPressed += 1;
+                if (numberOfPlayerPressed == 2)
+                    determineWinner();
+
+            }
+        }
+
+        function player2Pressed() {
+            if (startTime) {
+                player2Time = display.textContent;
+                player2Button.style.opacity = 0.2;
+                player2ButtonPressed = true;
+                player2Button.disabled = true;
+
+                // if both pressed, determine winner
+                numberOfPlayerPressed += 1;
+                if (numberOfPlayerPressed == 2)
+                    determineWinner();
+            }
+        }
+
+        function determineWinner() {
+            //first stop timer
+            if (startTime) {
+                clearInterval(intervalId);
+                display.style.opacity = 1;
+                startTime = null;
+            }
+
+            console.log(`p1: ${player1Time}, p2: ${player2Time}`)
+            if (player1Time && player2Time) {
+                if (Math.abs(player1Time - targetTime) < Math.abs(player2Time - targetTime)) {
+                    result.textContent = `${player1Time} 👈 player 1 wins! 🥳 ${player2Time}`;
+                } else if (Math.abs(player1Time - targetTime) > Math.abs(player2Time - targetTime)) {
+                    result.textContent = `${player1Time} 🥳 player 2 wins! 👉 ${player2Time}`;
+                } else {
+                    result.textContent = `${player1Time} 👐 Draw! 👐 ${player2Time}`;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

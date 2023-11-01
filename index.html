@@ -5,8 +5,13 @@
     <title>stopwatch game</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
     <style>
+        body {
+            /* deactivate double touch to zoom */
+            touch-action: manipulation; 
+        }
+
         html {
             height: 100%;
             /* font-size: 100%; */
@@ -24,14 +29,15 @@
             margin: 0;
             text-align: center;
         }
-        #result{
+
+        #result {
             font-family: 'Economica', sans-serif;
             color: rgb(230, 230, 230);
             font-size: 3rem;
             text-align: center;
         }
 
-        p{
+        p {
             font-family: 'Economica', sans-serif;
             color: rgb(230, 230, 230);
             font-size: 2rem;
@@ -53,7 +59,8 @@
             cursor: pointer;
             font-family: 'Economica', sans-serif;
         }
-        .playerButton{
+
+        .playerButton {
             /* width: 10rem; */
             height: 8rem;
             background: none;
@@ -89,10 +96,10 @@
                 <button id="resetButton" class="circleButton" style="margin: 0 1rem 0 1rem;">Reset</button>
             </div>
         </div>
-        
+
         <button id="player2Button" class="playerButton">Player 2 Stop</button>
     </div>
-    
+
     <p id="result"></p>
 
     <script>
@@ -115,7 +122,7 @@
         const result = document.getElementById("result");
         const customTargetTimeInput = document.getElementById("customTargetTime");
 
-        customTargetTimeInput.addEventListener("change", function() {
+        customTargetTimeInput.addEventListener("change", function () {
             targetTime = parseFloat(customTargetTimeInput.value);
             resetTimer();
             console.log(targetTime);
@@ -167,7 +174,7 @@
             result.textContent = '';
             player1Button.disabled = false;
             player2Button.disabled = false;
-            startButton.disabled = false;            
+            startButton.disabled = false;
         }
 
         function player1Pressed() {
